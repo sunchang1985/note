@@ -87,6 +87,22 @@ function Entity:StopUpdatingComponentDone(cmpInstance)
 end
 
 function Entity:RemoveChild(child)
+    child.parent = nil
+    if self.children then
+        self.children[child] = nil
+    end
+end
+
+function Entity:AddChild(child)
+    if child.parent then
+        child.parent:RemoveChild(child)
+    end
+
+    if not self.children then
+        self.children = {}
+    end
+    self.children[child] = child.name or "entity"
+    child.parent = self
 end
 
 function Entity:IsValid()

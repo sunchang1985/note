@@ -4,7 +4,7 @@ require "mainfunction"
 bump = require "libs.bump"
 
 function love.load()
-    font = love.graphics.newFont("WRYH.ttf", 16)
+    font = love.graphics.newFont("assets/WRYH.ttf", 16)
 end
 
 function love.textinput(t)
