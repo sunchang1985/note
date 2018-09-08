@@ -1,6 +1,7 @@
 require "entity"
 
 local EntId = 0
+EntsCount = 0
 UpdatingEntsCount = 0
 Ents = {}
 UpdatingEnts = {}
@@ -13,7 +14,15 @@ function CreateEntity()
     local ent = Entity()
     ent.id = EntId
     Ents[EntId] = ent
+    EntsCount = EntsCount + 1
     return ent
+end
+
+function RemoveEntity(id)
+    local ent = Ents[id]
+    if ent then
+        ent:OnRemove()
+    end
 end
 
 function LoadComponent(name)

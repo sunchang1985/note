@@ -7,6 +7,31 @@ Entity = Class(function(self)
 end
 )
 
+function Entity:OnRemove()
+    if self.parent then
+        self.parent:RemoveChild(self)
+        self.parent = nil
+    end
+    if self.children then
+        for ent in pairs(self.children) do
+            ent:OnRemove()
+        end
+    end
+    for _, cmpInstance in pairs(self.components) do
+        if cmpInstance.OnRemoveFromEntity then
+            cmpInstance:OnRemoveFromEntity()
+        end
+    end
+    self.updatingComponents = nil
+    NewUpdatingEnts[self.id] = nil
+    if UpdatingEnts[self.id] then
+        UpdatingEnts[self.id] = nil
+        UpdatingEntsCount = UpdatingEntsCount - 1
+    end
+    Ents[self.id] = nil
+    EntsCount = EntsCount - 1
+end
+
 function Entity:AddComponent(name)
     assert(self.components[name] == nil, "component " .. name .. " already existed")
     local Comp = LoadComponent(name)
@@ -59,6 +84,9 @@ function Entity:StopUpdatingComponentDone(cmpInstance)
             UpdatingEntsCount = UpdatingEntsCount - 1
         end
     end
+end
+
+function Entity:RemoveChild(child)
 end
 
 function Entity:IsValid()
