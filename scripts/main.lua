@@ -1,3 +1,4 @@
+require "nativeapi"
 require "tinyclass"
 require "util"
 require "mainfunction"
@@ -5,6 +6,8 @@ bump = require "libs.bump"
 
 function love.load()
     font = love.graphics.newFont("assets/WRYH.ttf", 16)
+    CreateTexture("tank")
+    Start()
 end
 
 function love.textinput(t)
@@ -30,8 +33,8 @@ function love.update(dt)
 end
 
 function love.draw()
+    MainDraw()
 end
 
 function love.quit()
 end
-

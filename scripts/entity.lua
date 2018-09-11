@@ -32,11 +32,12 @@ function Entity:OnRemove()
     EntsCount = EntsCount - 1
 end
 
-function Entity:AddComponent(name)
+function Entity:AddComponent(name, ...)
     assert(self.components[name] == nil, "component " .. name .. " already existed")
     local Comp = LoadComponent(name)
-    local cmpInstance = Comp(self)
+    local cmpInstance = Comp(self, ...)
     self.components[name] = cmpInstance
+    return cmpInstance
 end
 
 function Entity:RemoveComponent(name)

@@ -1,4 +1,5 @@
 require "entity"
+require "linkedlist"
 
 local EntId = 0
 EntsCount = 0
@@ -8,6 +9,10 @@ UpdatingEnts = {}
 NewUpdatingEnts = {}
 StopUpdatingCmps = {}
 Components = {}
+Textures = {}
+RenderList = List(function(n1, n2)
+    return n1.data.z > n2.data.z
+end)
 
 function CreateEntity()
     EntId = EntId + 1
@@ -62,4 +67,46 @@ function ComponentsUpdate(dt)
         end
         StopUpdatingCmps = {}
     end
+end
+
+function MainDraw()
+    local iter = RenderList:Iterator()
+    while iter.next() do
+        iter.current.data.renderer:Draw()
+    end
+end
+
+function CreateTexture(name)
+    assert(Textures[name] == nil, "texture " .. name .. " already existed")
+    local filepath = "assets/" .. name .. ".png"
+    local texture = API.LoadTexture(filepath)
+    Textures[name] = texture
+end
+
+function RemoveTexture(name)
+    local texture = Textures[name]
+    if texture then
+        Textures[name] = nil
+        API.ObjectRelease(texture)
+    end
+end
+
+function GetTexture(name)
+    local texture = Textures[name]
+    assert(texture, "texture " .. name .. " not exist")
+    return texture
+end
+
+function Start()
+    local function TestEntity()
+        local ent = CreateEntity()
+        local tf = ent:AddComponent(Transform.StaticName)
+        local sp = ent:AddComponent(Sprite.StaticName)
+        local re = ent:AddComponent(Renderer.StaticName)
+        tf.position = Vector3(100, 100, 0)
+        sp:SetTexture(GetTexture("tank"))
+        re:Enter()
+    end
+    
+    TestEntity()
 end
