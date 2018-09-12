@@ -16,7 +16,7 @@ end
 
 function Renderer:Draw()
     if not self.sprite.display then return end
-    API.DrawQuad(self.sprite.texture, self.mesh.quad, self.transform)
+    self.mesh:Draw(self.sprite.texture, self.transform)
 end
 
 function Renderer:Enter()
@@ -24,11 +24,11 @@ function Renderer:Enter()
     assert(transform, "no transform component")
     local sprite = self.ent.components[Sprite.StaticName]
     assert(sprite, "no sprite component")
-    local mesh = self.ent.components[Mesh.StaticName]
-    assert(mesh, "no mesh component")
+    local quadmesh = self.ent.components[QuadMesh.StaticName]
+    assert(quadmesh, "no mesh component")
     self.transform = transform
     self.sprite = sprite
-    self.mesh = mesh
+    self.mesh = quadmesh
     self.rendernode = Node({z = transform.position.z, renderer = self})
     RenderList:Insert(self.rendernode)
 end

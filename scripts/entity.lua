@@ -106,6 +106,26 @@ function Entity:AddChild(child)
     child.parent = self
 end
 
+function Entity:AddDisplayFeature(texname)
+    self:AddComponent(Transform.StaticName)
+    local sp = self:AddComponent(Sprite.StaticName)
+    sp:SetTexture(GetTexture(texname))
+    self:AddComponent(QuadMesh.StaticName, 0, 0, sp.texWidth, sp.texHeight, sp.texWidth, sp.texHeight, 0.5, 0.5)
+    self:AddComponent(Renderer.StaticName)
+end
+
+function Entity:SetPosition(x, y, z)
+    local tf = self.components[Transform.StaticName]
+    tf.position.x = x
+    tf.position.y = y
+    tf.position.z = z
+    local re = self.components[Renderer.StaticName]
+    if re then
+        re:Exit()
+        re:Enter()
+    end
+end
+
 function Entity:IsValid()
     return true
 end

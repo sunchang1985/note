@@ -19,8 +19,6 @@ end
 function Sprite:SetTexture(t)
     self.texture = t
     self.texWidth, self.texHeight = self.texture:getDimensions()
-    self.ent:RemoveComponent(Mesh.StaticName)
-    self.ent:AddComponent(Mesh.StaticName, 0, 0, self.texWidth, self.texHeight, self.texWidth, self.texHeight)
 end
 
 Sprite.StaticName = "Sprite"

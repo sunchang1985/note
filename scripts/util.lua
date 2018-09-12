@@ -1,5 +1,5 @@
 require "components.Transform"
-require "components.Mesh"
+require "components.QuadMesh"
 require "components.Sprite"
 require "components.Renderer"
 

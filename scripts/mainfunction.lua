@@ -100,12 +100,8 @@ end
 function Start()
     local function TestEntity()
         local ent = CreateEntity()
-        local tf = ent:AddComponent(Transform.StaticName)
-        local sp = ent:AddComponent(Sprite.StaticName)
-        local re = ent:AddComponent(Renderer.StaticName)
-        tf.position = Vector3(100, 100, 0)
-        sp:SetTexture(GetTexture("tank"))
-        re:Enter()
+        ent:AddDisplayFeature("icon")
+        ent:SetPosition(100, 100, 0)
     end
     
     TestEntity()
