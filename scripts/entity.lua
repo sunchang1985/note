@@ -4,6 +4,7 @@ Entity = Class(function(self)
     self.updatingComponents = nil
     self.children = nil
     self.parent = nil
+    self.activeSelf = false
 end
 )
 
@@ -65,7 +66,7 @@ function Entity:StartUpdatingComponent(cmpInstance)
     if mfn.StopUpdatingCmps[cmpInstance] == self then
         mfn.StopUpdatingCmps[cmpInstance] = nil
     end
-    self.updatingComponents[cmpInstance] = cmpInstance.StaticName or "component"
+    self.updatingComponents[cmpInstance] = cmpInstance or "component"
 end
 
 function Entity:StopUpdatingComponent(cmpInstance)
@@ -107,23 +108,51 @@ function Entity:AddChild(child)
 end
 
 function Entity:AddDisplayFeature(texname)
-    self:AddComponent(Transform.StaticName)
-    local sp = self:AddComponent(Sprite.StaticName)
+    self:AddComponent("Transform")
+    local sp = self:AddComponent("Sprite")
     sp:SetTexture(mfn:GetTexture(texname))
-    self:AddComponent(QuadMesh.StaticName, 0, 0, sp.texWidth, sp.texHeight, sp.texWidth, sp.texHeight, 0.5, 0.5)
-    self:AddComponent(Renderer.StaticName)
+    self:AddComponent("QuadMesh", 0, 0, sp.texWidth, sp.texHeight, sp.texWidth, sp.texHeight, 0.5, 0.5)
+    self:AddComponent("Renderer")
 end
 
 function Entity:SetPosition(x, y, z)
-    local tf = self.components[Transform.StaticName]
-    tf.position.x = x
-    tf.position.y = y
-    tf.position.z = z
-    local re = self.components[Renderer.StaticName]
-    if re then
-        re:Exit()
-        re:Enter()
+    local tf = self.components["Transform"]
+    local zz = tf.position.z
+    tf.position.x = x or tf.position.x
+    tf.position.y = y or tf.position.y
+    tf.position.z = z or tf.position.z
+    if zz ~= tf.position.z and self.activeSelf then
+        local re = self.components["Renderer"]
+        if re then
+            re:Exit()
+            re:Enter()
+        end
     end
+end
+
+function Entity:SetActive(active)
+    if self.activeSelf and not active then
+        local re = self.components["Renderer"]
+        if re then
+            re:Exit()
+        end
+        if self.children then
+            for ent in pairs(self.children) do
+                ent:SetActive(active)
+            end
+        end
+    elseif not self.activeSelf and active then
+        local re = self.components["Renderer"]
+        if re then
+            re:Enter()
+        end
+        if self.children then
+            for ent in pairs(self.children) do
+                ent:SetActive(active)
+            end
+        end
+    end
+    self.activeSelf = active
 end
 
 function Entity:IsValid()

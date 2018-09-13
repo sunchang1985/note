@@ -21,5 +21,4 @@ function Sprite:SetTexture(t)
     self.texWidth, self.texHeight = self.texture:getDimensions()
 end
 
-Sprite.StaticName = "Sprite"
 return Sprite

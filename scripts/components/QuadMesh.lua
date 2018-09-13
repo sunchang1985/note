@@ -29,5 +29,4 @@ function QuadMesh:Draw(texture, transform)
     API.DrawQuad(texture, self.obj, transform, self.origin)
 end
 
-QuadMesh.StaticName = "QuadMesh"
 return QuadMesh

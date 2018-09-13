@@ -62,37 +62,29 @@ function List:Iterator()
 end
 
 function List:Remove(node)
-    local iter = self:Iterator()
-    while iter.next() do
-        local currentNode = iter.current
-        if currentNode == node then
-            if node == self.head then
-                local nextNode = node.next
-                if nextNode then
-                    nextNode.prev = nil
-                    self.head = nextNode
-                else
-                    self.head = nil
-                    self.tail = nil
-                end
-            elseif node == self.tail then
-                local prevNode = node.prev
-                prevNode.next = nil
-                self.tail = prevNode
-            else
-                local prevNode = node.prev
-                local nextNode = node.next
-                prevNode.next = nextNode
-                nextNode.prev = prevNode
-            end
-
-            node.prev = nil
-            node.next = nil
-            node.data = nil
-            self.length = self.length - 1
-            break
+    local prev = node.prev
+    local next = node.next
+    if prev then
+        if next then
+            prev.next = next
+            next.prev = prev
+        else
+            self.tail = prev
+            self.tail.next = nil
+        end
+    else
+        if next then
+            self.head = next
+            self.head.prev = nil
+        else
+            self.head = nil
+            self.tail = nil
         end
     end
+    node.data = nil
+    node.prev = nil
+    node.next = nil
+    self.length = self.length - 1
 end
 
 local function TestList()

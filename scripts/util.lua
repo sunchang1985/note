@@ -1,8 +1,3 @@
-require "components.Transform"
-require "components.QuadMesh"
-require "components.Sprite"
-require "components.Renderer"
-
 function TableLength(t)
     local len = 0
     for k, v in pairs(t) do

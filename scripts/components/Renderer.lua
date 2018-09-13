@@ -20,11 +20,11 @@ function Renderer:Draw()
 end
 
 function Renderer:Enter()
-    local transform = self.ent.components[Transform.StaticName]
+    local transform = self.ent.components["Transform"]
     assert(transform, "no transform component")
-    local sprite = self.ent.components[Sprite.StaticName]
+    local sprite = self.ent.components["Sprite"]
     assert(sprite, "no sprite component")
-    local quadmesh = self.ent.components[QuadMesh.StaticName]
+    local quadmesh = self.ent.components["QuadMesh"]
     assert(quadmesh, "no mesh component")
     self.transform = transform
     self.sprite = sprite
@@ -35,14 +35,10 @@ end
 
 function Renderer:Exit()
     if self.rendernode then
-        mfn:ExitRenderList(self.rendernode)
         self.rendernode.data.renderer = nil
-        self.rendernode.data = nil
-        self.rendernode.prev = nil
-        self.rendernode.next = nil
+        mfn:ExitRenderList(self.rendernode)
         self.rendernode = nil
     end
 end
 
-Renderer.StaticName = "Renderer"
 return Renderer

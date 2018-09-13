@@ -127,6 +127,7 @@ function mfn:Start()
         local ent = self:CreateEntity()
         ent:AddDisplayFeature("icon")
         ent:SetPosition(200, 200, 0)
+        ent:SetActive(true)
     end
     
     TestEntity()
