@@ -23,18 +23,18 @@ function Entity:OnRemove()
         end
     end
     self.updatingComponents = nil
-    NewUpdatingEnts[self.id] = nil
-    if UpdatingEnts[self.id] then
-        UpdatingEnts[self.id] = nil
-        UpdatingEntsCount = UpdatingEntsCount - 1
+    mfn.NewUpdatingEnts[self.id] = nil
+    if mfn.UpdatingEnts[self.id] then
+        mfn.UpdatingEnts[self.id] = nil
+        mfn.UpdatingEntsCount = mfn.UpdatingEntsCount - 1
     end
-    Ents[self.id] = nil
-    EntsCount = EntsCount - 1
+    mfn.Ents[self.id] = nil
+    mfn.EntsCount = mfn.EntsCount - 1
 end
 
 function Entity:AddComponent(name, ...)
     assert(self.components[name] == nil, "component " .. name .. " already existed")
-    local Comp = LoadComponent(name)
+    local Comp = mfn:LoadComponent(name)
     local cmpInstance = Comp(self, ...)
     self.components[name] = cmpInstance
     return cmpInstance
@@ -58,19 +58,19 @@ function Entity:StartUpdatingComponent(cmpInstance)
 
     if not self.updatingComponents then
         self.updatingComponents = {}
-        NewUpdatingEnts[self.id] = self
-        UpdatingEntsCount = UpdatingEntsCount + 1
+        mfn.NewUpdatingEnts[self.id] = self
+        mfn.UpdatingEntsCount = mfn.UpdatingEntsCount + 1
     end
 
-    if StopUpdatingCmps[cmpInstance] == self then
-        StopUpdatingCmps[cmpInstance] = nil
+    if mfn.StopUpdatingCmps[cmpInstance] == self then
+        mfn.StopUpdatingCmps[cmpInstance] = nil
     end
     self.updatingComponents[cmpInstance] = cmpInstance.StaticName or "component"
 end
 
 function Entity:StopUpdatingComponent(cmpInstance)
     if self.updatingComponents then
-        StopUpdatingCmps[cmpInstance] = self
+        mfn.StopUpdatingCmps[cmpInstance] = self
     end
 end
 
@@ -80,9 +80,9 @@ function Entity:StopUpdatingComponentDone(cmpInstance)
         local num = TableLength(self.updatingComponents)
         if num == 0 then
             self.updatingComponents = nil
-            UpdatingEnts[self.id] = nil
-            NewUpdatingEnts[self.id] = nil
-            UpdatingEntsCount = UpdatingEntsCount - 1
+            mfn.UpdatingEnts[self.id] = nil
+            mfn.NewUpdatingEnts[self.id] = nil
+            mfn.UpdatingEntsCount = mfn.UpdatingEntsCount - 1
         end
     end
 end
@@ -109,7 +109,7 @@ end
 function Entity:AddDisplayFeature(texname)
     self:AddComponent(Transform.StaticName)
     local sp = self:AddComponent(Sprite.StaticName)
-    sp:SetTexture(GetTexture(texname))
+    sp:SetTexture(mfn:GetTexture(texname))
     self:AddComponent(QuadMesh.StaticName, 0, 0, sp.texWidth, sp.texHeight, sp.texWidth, sp.texHeight, 0.5, 0.5)
     self:AddComponent(Renderer.StaticName)
 end

@@ -1,107 +1,132 @@
+require "nativeapi"
+require "tinyclass"
+require "util"
 require "entity"
 require "linkedlist"
+bump = require "libs.bump"
+local debuginfo = require "debuginfo"
 
-local EntId = 0
-EntsCount = 0
-UpdatingEntsCount = 0
-Ents = {}
-UpdatingEnts = {}
-NewUpdatingEnts = {}
-StopUpdatingCmps = {}
-Components = {}
-Textures = {}
-RenderList = List(function(n1, n2)
-    return n1.data.z > n2.data.z
-end)
+mfn = {
+    EntId = 0,
+    EntsCount = 0,
+    UpdatingEntsCount = 0,
+    Ents = {},
+    UpdatingEnts = {},
+    NewUpdatingEnts = {},
+    StopUpdatingCmps = {},
+    Components = {},
+    Textures = {},
+    RenderList = List(function(n1, n2)
+        return n1.data.z > n2.data.z
+    end)
+}
 
-function CreateEntity()
-    EntId = EntId + 1
+
+function mfn:CreateEntity()
+    self.EntId = self.EntId + 1
     local ent = Entity()
-    ent.id = EntId
-    Ents[EntId] = ent
-    EntsCount = EntsCount + 1
+    ent.id = self.EntId
+    self.Ents[self.EntId] = ent
+    self.EntsCount = self.EntsCount + 1
     return ent
 end
 
-function RemoveEntity(id)
-    local ent = Ents[id]
+function mfn:RemoveEntity(id)
+    local ent = self.Ents[id]
     if ent then
         ent:OnRemove()
     end
 end
 
-function LoadComponent(name)
-    if Components[name] == nil then
+function mfn:LoadComponent(name)
+    if self.Components[name] == nil then
         local path = "components." .. name
-        Components[name] = require(path)
-        assert(Components[name], "cloud not load component " .. name)
+        self.Components[name] = require(path)
+        assert(self.Components[name], "cloud not load component " .. name)
     end
-    return Components[name]
+    return self.Components[name]
 end
 
-function MainUpdate(dt)
-    ComponentsUpdate(dt)
+function mfn:Update(dt)
+    self:ComponentsUpdate(dt)
+    debuginfo:Update()
 end
 
-function ComponentsUpdate(dt)
-    for entId, ent in pairs(UpdatingEnts) do
+function mfn:ComponentsUpdate(dt)
+    for entId, ent in pairs(self.UpdatingEnts) do
         if ent.updatingComponents then
             for cmpInstance in pairs(ent.updatingComponents) do
-                if not StopUpdatingCmps[cmpInstance] and cmpInstance.OnUpdate then
+                if not self.StopUpdatingCmps[cmpInstance] and cmpInstance.OnUpdate then
                     cmpInstance:OnUpdate(dt)
                 end
             end
         end
     end
 
-    if next(NewUpdatingEnts) ~= nil then
-        for entId, ent in pairs(NewUpdatingEnts) do
-            UpdatingEnts[entId] = ent
+    if next(self.NewUpdatingEnts) ~= nil then
+        for entId, ent in pairs(self.NewUpdatingEnts) do
+            self.UpdatingEnts[entId] = ent
         end
-        NewUpdatingEnts = {}
+        self.NewUpdatingEnts = {}
     end
 
-    if next(StopUpdatingCmps) ~= nil then
-        for cmpInstance, ent in pairs(StopUpdatingCmps) do
+    if next(self.StopUpdatingCmps) ~= nil then
+        for cmpInstance, ent in pairs(self.StopUpdatingCmps) do
             ent:StopUpdatingComponentDone(cmpInstance)
         end
-        StopUpdatingCmps = {}
+        self.StopUpdatingCmps = {}
     end
 end
 
-function MainDraw()
-    local iter = RenderList:Iterator()
+function mfn:EnterRenderList(node)
+    self.RenderList:Insert(node)
+end
+
+function mfn:ExitRenderList(node)
+    self.RenderList:Remove(node)
+end
+
+function mfn:Draw()
+    local iter = self.RenderList:Iterator()
     while iter.next() do
         iter.current.data.renderer:Draw()
     end
+
+    debuginfo:Draw()
 end
 
-function CreateTexture(name)
-    assert(Textures[name] == nil, "texture " .. name .. " already existed")
+function mfn:CreateTexture(name)
+    assert(self.Textures[name] == nil, "texture " .. name .. " already existed")
     local filepath = "assets/" .. name .. ".png"
     local texture = API.LoadTexture(filepath)
-    Textures[name] = texture
+    self.Textures[name] = texture
 end
 
-function RemoveTexture(name)
-    local texture = Textures[name]
+function mfn:RemoveTexture(name)
+    local texture = self.Textures[name]
     if texture then
-        Textures[name] = nil
+        self.Textures[name] = nil
         API.ObjectRelease(texture)
     end
 end
 
-function GetTexture(name)
-    local texture = Textures[name]
+function mfn:GetTexture(name)
+    local texture = self.Textures[name]
     assert(texture, "texture " .. name .. " not exist")
     return texture
 end
 
-function Start()
+function mfn:Load()
+    self.font = love.graphics.newFont("assets/WRYH.ttf", 16)
+    self:CreateTexture("icon")
+    self:Start()
+end
+
+function mfn:Start()
     local function TestEntity()
-        local ent = CreateEntity()
+        local ent = self:CreateEntity()
         ent:AddDisplayFeature("icon")
-        ent:SetPosition(100, 100, 0)
+        ent:SetPosition(200, 200, 0)
     end
     
     TestEntity()

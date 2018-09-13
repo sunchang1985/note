@@ -30,12 +30,12 @@ function Renderer:Enter()
     self.sprite = sprite
     self.mesh = quadmesh
     self.rendernode = Node({z = transform.position.z, renderer = self})
-    RenderList:Insert(self.rendernode)
+    mfn:EnterRenderList(self.rendernode)
 end
 
 function Renderer:Exit()
     if self.rendernode then
-        RenderList:Remove(self.rendernode)
+        mfn:ExitRenderList(self.rendernode)
         self.rendernode.data.renderer = nil
         self.rendernode.data = nil
         self.rendernode.prev = nil
