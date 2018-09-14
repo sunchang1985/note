@@ -3,6 +3,7 @@ require "tinyclass"
 require "util"
 require "entity"
 require "linkedlist"
+require "prefab"
 bump = require "libs.bump"
 local debuginfo = require "debuginfo"
 
@@ -18,7 +19,9 @@ mfn = {
     Textures = {},
     RenderList = List(function(n1, n2)
         return n1.data.z > n2.data.z
-    end)
+    end),
+    Fonts = {},
+    Prefabs = {}
 }
 
 
@@ -45,6 +48,15 @@ function mfn:LoadComponent(name)
         assert(self.Components[name], "cloud not load component " .. name)
     end
     return self.Components[name]
+end
+
+function mfn:LoadPrefab(name)
+    if self.Prefabs[name] == nil then
+        local path = "prefabs." .. name
+        self.Prefabs[name] = require(path)
+        assert(self.Prefabs[name], "cloud not load prefab " .. name)
+    end
+    return self.Prefabs[name]
 end
 
 function mfn:Update(dt)
@@ -116,18 +128,35 @@ function mfn:GetTexture(name)
     return texture
 end
 
-function mfn:Load()
-    self.font = love.graphics.newFont("assets/WRYH.ttf", 16)
-    self:CreateTexture("icon")
-    self:Start()
+function mfn:GetFont(fontname, fontsize)
+    local fontkey = string.format("%s%s", fontname, fontsize)
+    local font = self.Fonts[fontkey]
+    if not font then
+        font = API.NewFont(fontname, fontsize)
+        self.Fonts[fontkey] = font
+    end
+    return font
 end
 
-function mfn:Start()
+function mfn:Load()
+    self:CreateTexture("icon")
+    self:Main()
+end
+
+function mfn:Main()
     local function TestEntity()
         local ent = self:CreateEntity()
         ent:AddDisplayFeature("icon")
-        ent:SetPosition(200, 200, 0)
+        ent.transform:SetWorldPosition(200, 200, 0)
         ent:SetActive(true)
+        local label = self:LoadPrefab("label"):Instantiate()
+        label.transform:SetWorldPosition(200, 200, -1)
+        label.transform.rotation = 45
+        label.text:SetAnchor(0.5, 0.5)
+        label.text:SetSize(100, 100)
+        label.text:SetAlign("left")
+        label.text:SetValue("中国中国中国中国中国中国中国")
+        label:SetActive(true)
     end
     
     TestEntity()

@@ -115,24 +115,9 @@ function Entity:AddDisplayFeature(texname)
     self:AddComponent("Renderer")
 end
 
-function Entity:SetPosition(x, y, z)
-    local tf = self.components["Transform"]
-    local zz = tf.position.z
-    tf.position.x = x or tf.position.x
-    tf.position.y = y or tf.position.y
-    tf.position.z = z or tf.position.z
-    if zz ~= tf.position.z and self.activeSelf then
-        local re = self.components["Renderer"]
-        if re then
-            re:Exit()
-            re:Enter()
-        end
-    end
-end
-
 function Entity:SetActive(active)
     if self.activeSelf and not active then
-        local re = self.components["Renderer"]
+        local re = self.renderer
         if re then
             re:Exit()
         end
@@ -142,7 +127,7 @@ function Entity:SetActive(active)
             end
         end
     elseif not self.activeSelf and active then
-        local re = self.components["Renderer"]
+        local re = self.renderer
         if re then
             re:Enter()
         end

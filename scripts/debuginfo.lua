@@ -9,7 +9,6 @@ function debuginfo:Update()
 end
 
 function debuginfo:Draw()
-    love.graphics.setFont(mfn.font)
     love.graphics.print("FPS: " .. self.fps, 0, 0)
     love.graphics.print("Memory (KB): " .. self.mem, 0, 20)
     love.graphics.print("ents: " .. self.ents, 0, 40)
