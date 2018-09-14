@@ -93,6 +93,8 @@ function Entity:RemoveChild(child)
     if self.children then
         self.children[child] = nil
     end
+    local childPosition = child.transform.position
+    child.transform:SetLocalPosition(childPosition.x, childPosition.y, childPosition.z)
 end
 
 function Entity:AddChild(child)
@@ -105,10 +107,11 @@ function Entity:AddChild(child)
     end
     self.children[child] = child.name or "entity"
     child.parent = self
+    local childPosition = child.transform.position
+    child.transform:SetWorldPosition(childPosition.x, childPosition.y, childPosition.z)
 end
 
 function Entity:AddDisplayFeature(texname)
-    self:AddComponent("Transform")
     local sp = self:AddComponent("Sprite")
     sp:SetTexture(mfn:GetTexture(texname))
     self:AddComponent("QuadMesh", 0, 0, sp.texWidth, sp.texHeight, sp.texWidth, sp.texHeight, 0.5, 0.5)

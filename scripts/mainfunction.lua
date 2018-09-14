@@ -4,6 +4,7 @@ require "util"
 require "entity"
 require "linkedlist"
 require "prefab"
+require "fastapi"
 bump = require "libs.bump"
 local debuginfo = require "debuginfo"
 
@@ -31,6 +32,7 @@ function mfn:CreateEntity()
     ent.id = self.EntId
     self.Ents[self.EntId] = ent
     self.EntsCount = self.EntsCount + 1
+    ent:AddComponent("Transform")
     return ent
 end
 
@@ -145,18 +147,16 @@ end
 
 function mfn:Main()
     local function TestEntity()
-        local ent = self:CreateEntity()
-        ent:AddDisplayFeature("icon")
-        ent.transform:SetWorldPosition(200, 200, 0)
-        ent:SetActive(true)
-        local label = self:LoadPrefab("label"):Instantiate()
-        label.transform:SetWorldPosition(200, 200, -1)
-        label.transform.rotation = 45
-        label.text:SetAnchor(0.5, 0.5)
-        label.text:SetSize(100, 100)
-        label.text:SetAlign("left")
-        label.text:SetValue("中国中国中国中国中国中国中国")
+        local label = fastfab("label")
+        label.transform:SetWorldPosition(200, 200, 1)
+        label.text:SetValue("中国中国中国")
         label:SetActive(true)
+        local label2 = fastfab("label")
+        label2.transform:SetWorldPosition(200, 200, 1)
+        label2.text:SetValue("中国中国中国")
+        label2:SetActive(true)
+        label:AddChild(label2)
+        label2.transform:SetLocalPosition(2, 2, -2)
     end
     
     TestEntity()
