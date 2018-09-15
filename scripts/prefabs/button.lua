@@ -1,6 +1,6 @@
 local function fn(asset)
     local root = mfn:CreateEntity()
-    local label = fastfab("label")
+    local label = fastfab("label", asset)
     local bg = fastfab("sprite", asset)
     root:AddChild(bg)
     root:AddChild(label)

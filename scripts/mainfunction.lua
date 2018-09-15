@@ -147,7 +147,7 @@ end
 
 function mfn:Main()
     local function TestEntity()
-        local btn = fastfab("button", {texname = "icon"})
+        local btn = fastfab("button", {texname = "icon", text = {{1, 0, 0, 1}, "Button"}})
         btn.transform:SetWorldPosition(200, 200, 1)
         btn:SetActive(true)
     end
