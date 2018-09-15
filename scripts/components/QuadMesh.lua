@@ -33,7 +33,7 @@ function QuadMesh:SetDisplay(f)
 end
 
 function QuadMesh:Draw()
-    API.DrawQuad(self.ent.sprite.texture, self.obj, self.ent.transform, self.origin)
+    API.DrawQuad(self.ent.texture.rawtexture, self.obj, self.ent.transform, self.origin)
 end
 
 return QuadMesh

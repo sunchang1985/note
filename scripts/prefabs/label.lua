@@ -1,4 +1,4 @@
-local function fn()
+local function fn(asset)
     local ent = mfn:CreateEntity()
     ent:AddComponent("Text")
     ent:AddComponent("Renderer")

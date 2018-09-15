@@ -115,13 +115,6 @@ function Entity:AddChild(child)
     child.transform:SetScale(child.transform.scale.x, child.transform.scale.y)
 end
 
-function Entity:AddDisplayFeature(texname)
-    local sp = self:AddComponent("Sprite")
-    sp:SetTexture(mfn:GetTexture(texname))
-    self:AddComponent("QuadMesh", 0, 0, sp.texWidth, sp.texHeight, sp.texWidth, sp.texHeight, 0.5, 0.5)
-    self:AddComponent("Renderer")
-end
-
 function Entity:SetActive(active)
     if self.activeSelf and not active then
         local re = self.renderer

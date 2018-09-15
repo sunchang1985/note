@@ -3,6 +3,6 @@ Prefab = Class(function(self, name, fn)
     self.fn = fn
 end)
 
-function Prefab:Instantiate()
-    return self.fn()
+function Prefab:Instantiate(asset)
+    return self.fn(asset)
 end

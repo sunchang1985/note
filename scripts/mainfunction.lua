@@ -147,18 +147,9 @@ end
 
 function mfn:Main()
     local function TestEntity()
-        local label = fastfab("label")
-        label.transform:SetWorldPosition(200, 200, 1)
-        label.text:SetValue("中国中国中国")
-        label:SetActive(true)
-        local label2 = fastfab("label")
-        label2.text:SetValue("中国中国中国")
-        label2:SetActive(true)
-        label:AddChild(label2)
-        label2.transform:SetLocalPosition(2, 2, 2)
-        label.transform:SetScale(2, 2)
-        label.transform:SetRotation(45)
-        label2.transform:SetLocalRotation(45)
+        local btn = fastfab("button", {texname = "icon"})
+        btn.transform:SetWorldPosition(200, 200, 1)
+        btn:SetActive(true)
     end
     
     TestEntity()
