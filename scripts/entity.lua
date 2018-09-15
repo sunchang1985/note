@@ -95,6 +95,8 @@ function Entity:RemoveChild(child)
     end
     local childPosition = child.transform.position
     child.transform:SetLocalPosition(childPosition.x, childPosition.y, childPosition.z)
+    child.transform:SetLocalRotation(child.transform.rotation)
+    child.transform:SetLocalScale(child.transform.scale.x, child.transform.scale.y)
 end
 
 function Entity:AddChild(child)
@@ -109,6 +111,8 @@ function Entity:AddChild(child)
     child.parent = self
     local childPosition = child.transform.position
     child.transform:SetWorldPosition(childPosition.x, childPosition.y, childPosition.z)
+    child.transform:SetRotation(child.transform.rotation)
+    child.transform:SetScale(child.transform.scale.x, child.transform.scale.y)
 end
 
 function Entity:AddDisplayFeature(texname)
