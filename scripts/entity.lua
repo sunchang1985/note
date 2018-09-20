@@ -121,6 +121,10 @@ function Entity:SetActive(active)
         if re then
             re:Exit()
         end
+        local boxcollider = self.boxcollider
+        if boxcollider then
+            boxcollider:Exit()
+        end
         if self.children then
             for ent in pairs(self.children) do
                 ent:SetActive(active)
@@ -130,6 +134,10 @@ function Entity:SetActive(active)
         local re = self.renderer
         if re then
             re:Enter()
+        end
+        local boxcollider = self.boxcollider
+        if boxcollider then
+            boxcollider:Enter()
         end
         if self.children then
             for ent in pairs(self.children) do

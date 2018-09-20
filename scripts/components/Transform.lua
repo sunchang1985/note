@@ -22,11 +22,19 @@ function Transform:SetWorldPosition(x, y, z)
     self.position.x = x or self.position.x
     self.position.y = y or self.position.y
     self.position.z = z or self.position.z
+    local boxcollider = self.ent.boxcollider
+    if boxcollider then
+        boxcollider:CalcBounds()
+    end
     if zz ~= self.position.z and self.ent.activeSelf then
         local re = self.ent.renderer
         if re then
             re:Exit()
             re:Enter()
+        end
+        if boxcollider then
+            boxcollider:Exit()
+            boxcollider:Enter()
         end
     end
     if self.ent.parent then

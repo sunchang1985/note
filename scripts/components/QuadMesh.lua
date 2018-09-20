@@ -36,4 +36,13 @@ function QuadMesh:Draw()
     API.DrawQuad(self.ent.texture.rawtexture, self.obj, self.ent.transform, self.origin)
 end
 
+function QuadMesh:GetSize()
+    _, _, w, h = self.obj:getViewport()
+    return w, h
+end
+
+function QuadMesh:GetAnchor()
+    return self.anchor.x, self.anchor.y
+end
+
 return QuadMesh

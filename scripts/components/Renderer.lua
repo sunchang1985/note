@@ -19,7 +19,6 @@ end
 
 function Renderer:Enter()
     local transform = self.ent.transform
-    assert(transform, "no transform component")
     local quadmesh = self.ent.quadmesh
     local text = self.ent.text
     local mesh = quadmesh or text

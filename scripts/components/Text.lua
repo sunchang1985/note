@@ -49,4 +49,12 @@ function Text:Draw()
     API.DrawText(self.font, self.value, self.ent.transform, self.align, self.w, self.origin)
 end
 
+function Text:GetSize()
+    return self.w, self.h
+end
+
+function Text:GetAnchor()
+    return self.anchor.x, self.anchor.y
+end
+
 return Text

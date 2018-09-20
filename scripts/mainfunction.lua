@@ -21,8 +21,12 @@ mfn = {
     RenderList = List(function(n1, n2)
         return n1.data.z > n2.data.z
     end),
+    ColliderList = List(function(n1, n2)
+        return n1.data.z < n2.data.z
+    end),
     Fonts = {},
-    Prefabs = {}
+    Prefabs = {},
+    MouseTarget = nil
 }
 
 
@@ -100,6 +104,14 @@ function mfn:ExitRenderList(node)
     self.RenderList:Remove(node)
 end
 
+function mfn:EnterColliderList(node)
+    self.ColliderList:Insert(node)
+end
+
+function mfn:ExitColliderList(node)
+    self.ColliderList:Remove(node)
+end
+
 function mfn:Draw()
     local iter = self.RenderList:Iterator()
     while iter.next() do
@@ -140,6 +152,56 @@ function mfn:GetFont(fontname, fontsize)
     return font
 end
 
+function mfn:MousePressed(x, y, button)
+    if button == 1 then
+        local iter = self.ColliderList:Iterator()
+        while iter.next() do
+            local collider = iter.current.data.collider
+            if collider:InBounds(x, y) then
+                self.MouseTarget = collider.ent
+                if self.MouseTarget.state then
+                    self.MouseTarget.state.pressed = true
+                end
+                if self.MouseTarget.eventlistener then
+                    self.MouseTarget.eventlistener:Dispatch("mousepressed")
+                end
+                break;
+            end
+        end
+    end
+end
+
+function mfn:MouseReleased(x, y, button)
+    if button == 1 then
+        local target = nil
+        local iter = self.ColliderList:Iterator()
+        while iter.next() do
+            local collider = iter.current.data.collider
+            if collider:InBounds(x, y) then
+                target = collider.ent
+                break;
+            end
+        end
+        if self.MouseTarget then
+            if self.MouseTarget.state then
+                self.MouseTarget.state.pressed = false
+            end
+            if self.MouseTarget.eventlistener then
+                self.MouseTarget.eventlistener:Dispatch("mousereleased")
+            end
+        end
+        if target and target == self.MouseTarget then
+            if self.MouseTarget.state then
+                self.MouseTarget.state.pressed = false
+            end
+            if self.MouseTarget.eventlistener then
+                self.MouseTarget.eventlistener:Dispatch("mouseclicked")
+            end
+        end
+        self.MouseTarget = nil
+    end
+end
+
 function mfn:Load()
     self:CreateTexture("icon")
     self:Main()
@@ -147,7 +209,15 @@ end
 
 function mfn:Main()
     local function TestEntity()
-        local btn = fastfab("button", {texname = "icon", text = {{1, 0, 0, 1}, "Button"}})
+        local label = fastfab("label", {text = "NONE"})
+        label.transform:SetWorldPosition(200, 400, 1)
+        label:SetActive(true)
+        local btn = fastfab("button", {texname = "icon", text = {{1, 0, 0, 1}, "Button"}, mousepressedfn = function() 
+            label.text:SetValue("pressed")
+        end, mouseclickedfn = function()
+            label.text:SetValue("clicked")
+        end
+        })
         btn.transform:SetWorldPosition(200, 200, 1)
         btn:SetActive(true)
     end

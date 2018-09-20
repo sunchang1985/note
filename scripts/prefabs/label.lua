@@ -1,10 +1,7 @@
 local function fn(asset)
     local ent = mfn:CreateEntity()
-    ent:AddComponent("Text")
+    ent:AddComponent("Text", asset.text)
     ent:AddComponent("Renderer")
-    if asset.text then
-        ent.text:SetValue(asset.text)
-    end
     return ent
 end
 

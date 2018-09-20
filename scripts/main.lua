@@ -17,9 +17,11 @@ function love.mousemoved(x, y)
 end
 
 function love.mousepressed(x, y, button)
+    mfn:MousePressed(x, y, button)
 end
 
 function love.mousereleased(x, y, button)
+    mfn:MouseReleased(x, y, button)
 end
 
 function love.update(dt)
